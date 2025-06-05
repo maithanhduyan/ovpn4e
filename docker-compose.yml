@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # ========================
+  # LỚP CORE VPN
+  # ========================
+  wireguard:
+    image: linuxserver/wireguard:latest
+    container_name: wg-vpn
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
+    environment:
+      - PUID=${PUID:-1000}
+      - PGID=${PGID:-1000}
+      - TZ=${TZ:-Asia/Ho_Chi_Minh}
+      - SERVERURL=${SERVERURL:-vpn.yourdomain.com}
+      - SERVERPORT=${SERVERPORT:-51820}
+      - PEERS=${PEERS:-10} # Start small for testing
+      - PEERDNS=${PEERDNS:-1.1.1.1,8.8.8.8}
+      - INTERNAL_SUBNET=${INTERNAL_SUBNET:-10.8.0.0/24}
+      - ALLOWEDIPS=${ALLOWEDIPS:-0.0.0.0/0}
+      - LOG_CONFS=true
+    volumes:
+      - ./wg-data:/config
+      - /lib/modules:/lib/modules:ro
+      - ./logs:/var/log/wireguard
+    ports:
+      - "51820:51820/udp"
+    sysctls:
+      - net.ipv4.ip_forward=1
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
+    networks:
+      - vpn-net
+    healthcheck:  # Monitor container health
+      test: ["CMD", "wg", "show"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ========================
+  # LỚP BẢO MẬT
+  # ========================
+  
+
+  # ========================
+  # LỚP QUẢN LÝ
+  # ========================
+
+
+  # ========================
+  # LỚP GIÁM SÁT
+  # ========================
+
+networks:
+  vpn-net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.100.0/24

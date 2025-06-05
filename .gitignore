@@ -192,3 +192,45 @@ cython_debug/
 #  refer to https://docs.cursor.com/context/ignore-files
 .cursorignore
 .cursorindexingignore
+
+# ========================
+# VPN SERVER SPECIFIC
+# ========================
+
+# Wireguard Configuration Data
+# Contains sensitive private keys, certificates, and client configs
+wg-data/
+!wg-data/.gitkeep
+
+# VPN Logs (may contain sensitive connection data)
+logs/
+!logs/.gitkeep
+
+# Monitoring & Security Data
+monitoring/data/
+prometheus_data/
+grafana_data/
+fail2ban/
+
+# SSL/TLS Certificates
+*.pem
+*.key
+*.crt
+*.csr
+
+# Environment files with sensitive data
+.env.production
+.env.local
+.env.*.local
+
+# Docker volumes data
+*_data/
+
+# Backup files
+*.backup
+*.bak
+wg-backup-*
+
+# Client configuration archives
+client-configs-*.zip
+client-configs-*.tar.gz

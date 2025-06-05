@@ -1,8 +1,8 @@
 # OpenVPN Enterprise Server
 Ý tưởng ban đầu:
-Tạo một openvpn server cho doanh nghiệp có hơn 10000 nhân sự.
+Tạo một vpn server cho doanh nghiệp có hơn 10000 nhân sự.
 Mục tiêu hoạt động an toàn, ổn định, cảnh báo, phát hiện xâm nhập bảo vệ toàn bộ công ty. 
-- Có dockerfile để cấu hình 
+- Sử dụng Wireguard
 - Có docker-compose.yml để quản lý container ghi log data
 - Thích ứng linh hoạt trong trường hợp vừa bị tấn công, vừa phải vận hành hệ thống liên tục
 - Có cách ly khi gặp sự cố.
