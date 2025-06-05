@@ -18,12 +18,12 @@ echo "✅ Docker is running"
 
 # 2. Validate docker-compose syntax
 echo "2. Validating docker-compose.yml..."
-docker-compose config > /dev/null
+docker compose config > /dev/null
 echo "✅ docker-compose.yml syntax OK"
 
 # 3. Pull images
 echo "3. Pulling Wireguard image..."
-docker-compose pull wireguard
+docker compose pull wireguard
 echo "✅ Images pulled successfully"
 
 # 4. Create required directories
@@ -33,7 +33,7 @@ echo "✅ Directories created"
 
 # 5. Start services
 echo "5. Starting VPN services..."
-docker-compose up -d wireguard
+docker compose up -d wireguard
 echo "✅ Services started"
 
 # 6. Wait for container to be ready
@@ -42,11 +42,11 @@ sleep 10
 
 # 7. Check container health
 echo "7. Checking container health..."
-if docker-compose ps wireguard | grep -q "Up"; then
+if docker compose ps wireguard | grep -q "Up"; then
     echo "✅ Wireguard container is running"
 else
     echo "❌ Wireguard container failed to start"
-    docker-compose logs wireguard
+    docker compose logs wireguard
     exit 1
 fi
 
@@ -61,7 +61,7 @@ fi
 
 # 9. Check logs
 echo "9. Recent logs:"
-docker-compose logs --tail=10 wireguard
+docker compose logs --tail=10 wireguard
 
 # 10. Show connection info
 echo "10. Connection Information:"
