@@ -1,0 +1,3 @@
+# Keep this directory in git
+# This ensures the wg-data directory structure is maintained
+# All sensitive files are ignored, but the structure is preserved

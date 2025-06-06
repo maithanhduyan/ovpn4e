@@ -1,0 +1,38 @@
+# WireGuard Data Directory - SECURITY CRITICAL
+# This directory contains sensitive VPN configuration data
+# ALL files here should be excluded from version control
+
+# Private keys (NEVER commit these)
+**/privatekey-*
+**/publickey-*
+**/presharedkey-*
+
+# Client configurations (contain sensitive data)
+**/*.conf
+!templates/*.conf
+
+# QR codes (may contain sensitive config data)
+**/*.png
+**/*.jpg
+**/*.svg
+
+# Peer-specific data
+peer*/
+server/
+coredns/
+
+# Configuration files
+wg_confs/
+*.key
+*.pem
+*.crt
+
+# Logs and temporary files
+*.log
+*.tmp
+*.backup
+
+# Keep only templates and structure
+!templates/
+!.gitkeep
+!README.md

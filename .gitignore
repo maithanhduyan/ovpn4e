@@ -200,11 +200,20 @@ cython_debug/
 # Wireguard Configuration Data
 # Contains sensitive private keys, certificates, and client configs
 wg-data/
+wg-data-*/
 !wg-data/.gitkeep
+!wg-data-*/.gitkeep
 
 # VPN Logs (may contain sensitive connection data)
 logs/
 !logs/.gitkeep
+!logs/nginx/.gitkeep
+
+# Nginx specific logs and cache
+logs/nginx/*.log
+logs/nginx/access.log*
+logs/nginx/error.log*
+logs/nginx/stream_*.log*
 
 # Monitoring & Security Data
 monitoring/data/
@@ -217,20 +226,162 @@ fail2ban/
 *.key
 *.crt
 *.csr
+ssl/
+certs/
 
 # Environment files with sensitive data
+.env
 .env.production
 .env.local
 .env.*.local
+docker-compose.override.yml
 
 # Docker volumes data
 *_data/
+docker-data/
 
 # Backup files
 *.backup
 *.bak
 wg-backup-*
+nginx-backup-*
 
 # Client configuration archives
 client-configs-*.zip
 client-configs-*.tar.gz
+
+# Test outputs and temporary files
+tests/output/
+tests/temp/
+tests/*.tmp
+tests/*.output
+
+# Load balancer specific
+nginx/cache/
+nginx/tmp/
+nginx/*.pid
+
+# Database files (if any)
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary configuration files
+*.conf.tmp
+*.conf.backup
+docker-compose.yml.backup
+
+# ========================
+# DOCKER & CONTAINERS
+# ========================
+
+# Docker build context
+.dockerignore
+Dockerfile.backup
+docker-compose.*.yml
+!docker-compose.yml
+
+# Container logs
+containers/
+.container-*
+
+# Docker secrets and configs
+docker/secrets/
+docker/configs/
+.docker/
+
+# Volume mounts
+volumes/
+data/
+
+# ========================
+# LOAD BALANCER SPECIFIC
+# ========================
+
+# Nginx generated files
+nginx/fastcgi_temp/
+nginx/uwsgi_temp/
+nginx/scgi_temp/
+nginx/proxy_temp/
+nginx/client_body_temp/
+
+# Load balancer test outputs
+tests/*_output.txt
+tests/*_results.log
+tests/performance_*.json
+
+# Health check files
+.health/
+health-check-*.log
+
+# ========================
+# SECURITY & SECRETS
+# ========================
+
+# Private keys and certificates
+private/
+secrets/
+auth/
+*.priv
+
+# API keys and tokens
+api-keys/
+tokens/
+.secrets
+
+# Authentication files
+htpasswd
+.htaccess
+
+# ========================
+# DEVELOPMENT & TESTING
+# ========================
+
+# IDE and editor files
+.vscode/settings.json
+.vscode/launch.json
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Testing artifacts
+coverage/
+.nyc_output/
+junit.xml
+test-results/
+
+# Temporary and cache files
+.cache/
+.tmp/
+tmp/
+cache/
+
+# ========================
+# PRODUCTION DEPLOYMENT
+# ========================
+
+# Production configs (keep templates)
+config/production/
+deploy/production/
+*.production.conf
+
+# Deployment logs
+deploy.log
+deployment-*.log
+
+# CI/CD artifacts
+.github/workflows/secrets/
+.gitlab-ci-local/
+
+# Terraform (if used for infrastructure)
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+
+# Ansible (if used for configuration)
+*.retry
+inventory/hosts
+group_vars/*/vault.yml
