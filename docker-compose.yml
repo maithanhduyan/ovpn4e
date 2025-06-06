@@ -23,47 +23,8 @@ services:
       - ./wg-data:/config
       - /lib/modules:/lib/modules:ro
       - ./logs:/var/log/wireguard
-    # KHÔNG expose port ra ngoài - chỉ internal network
-    # ports:
-    #   - "51820:51820/udp"  # Đã di chuyển sang nginx load balancer
-    sysctls:
-      - net.ipv4.ip_forward=1
-      - net.ipv4.conf.all.src_valid_mark=1
-    restart: unless-stopped
-    networks:
-      - vpn-net
-    healthcheck:  # Monitor container health
-      test: ["CMD", "wg", "show"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  # Additional WireGuard instances for load balancing
-  wireguard-2:
-    image: linuxserver/wireguard:latest
-    container_name: wg-vpn-2
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    environment:
-      - PUID=${PUID:-1000}
-      - PGID=${PGID:-1000}
-      - TZ=${TZ:-Asia/Ho_Chi_Minh}
-      - SERVERURL=${SERVERURL:-vpn.yourdomain.com}
-      - SERVERPORT=51822
-      - PEERS=${PEERS:-5}
-      - PEERDNS=${PEERDNS:-1.1.1.1,8.8.8.8}
-      - INTERNAL_SUBNET=10.9.0.0/24
-      - ALLOWEDIPS=${ALLOWEDIPS:-0.0.0.0/0}
-      - LOG_CONFS=true
-    volumes:
-      - ./wg-data-2:/config
-      - /lib/modules:/lib/modules:ro
-      - ./logs:/var/log/wireguard
-    # KHÔNG expose port ra ngoài - chỉ thông qua nginx load balancer
-    # ports:
-    #   - "51822:51820/udp"
+    ports:
+      - "51820:51820/udp" # Đã di chuyển sang nginx load balancer
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
@@ -71,74 +32,17 @@ services:
     networks:
       - vpn-net
     healthcheck:
-      test: ["CMD", "wg", "show"]
+      # Monitor container health
+      test: [ "CMD", "wg", "show" ]
       interval: 30s
       timeout: 10s
       retries: 3
       start_period: 40s
 
-  wireguard-3:
-    image: linuxserver/wireguard:latest
-    container_name: wg-vpn-3
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    environment:
-      - PUID=${PUID:-1000}
-      - PGID=${PGID:-1000}
-      - TZ=${TZ:-Asia/Ho_Chi_Minh}
-      - SERVERURL=${SERVERURL:-vpn.yourdomain.com}
-      - SERVERPORT=51823
-      - PEERS=${PEERS:-5}
-      - PEERDNS=${PEERDNS:-1.1.1.1,8.8.8.8}
-      - INTERNAL_SUBNET=10.10.0.0/24
-      - ALLOWEDIPS=${ALLOWEDIPS:-0.0.0.0/0}
-      - LOG_CONFS=true
-    volumes:
-      - ./wg-data-3:/config
-      - /lib/modules:/lib/modules:ro
-      - ./logs:/var/log/wireguard
-    # KHÔNG expose port ra ngoài - chỉ thông qua nginx load balancer
-    # ports:
-    #   - "51823:51820/udp"
-    sysctls:
-      - net.ipv4.ip_forward=1
-      - net.ipv4.conf.all.src_valid_mark=1
-    restart: unless-stopped
-    networks:
-      - vpn-net
-    healthcheck:
-      test: ["CMD", "wg", "show"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
+  
   # ========================
   # LỚP BẢO MẬT
   # ========================
-  nginx:
-    image: nginx:alpine
-    container_name: vpn-proxy
-    ports:
-      - "80:80"
-      - "443:443"
-      - "51820:51820/udp"  # DUY NHẤT port WireGuard ra ngoài - Load balancer cho tất cả WireGuard traffic
-    volumes:
-      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
-      - ./logs/nginx:/var/log/nginx
-    restart: unless-stopped
-    networks:
-      - vpn-net
-    depends_on:
-      - wireguard
-      - wireguard-2
-      - wireguard-3
-    healthcheck:
-      test: ["CMD", "nginx", "-t"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   # ========================
   # LỚP QUẢN LÝ
