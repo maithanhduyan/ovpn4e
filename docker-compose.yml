@@ -23,8 +23,9 @@ services:
       - ./wg-data:/config
       - /lib/modules:/lib/modules:ro
       - ./logs:/var/log/wireguard
-    ports:
-      - "51820:51820/udp"
+    # KHÔNG expose port ra ngoài - chỉ internal network
+    # ports:
+    #   - "51820:51820/udp"  # Đã di chuyển sang nginx load balancer
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
@@ -60,8 +61,9 @@ services:
       - ./wg-data-2:/config
       - /lib/modules:/lib/modules:ro
       - ./logs:/var/log/wireguard
-    ports:
-      - "51822:51820/udp"
+    # KHÔNG expose port ra ngoài - chỉ thông qua nginx load balancer
+    # ports:
+    #   - "51822:51820/udp"
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
@@ -96,8 +98,9 @@ services:
       - ./wg-data-3:/config
       - /lib/modules:/lib/modules:ro
       - ./logs:/var/log/wireguard
-    ports:
-      - "51823:51820/udp"
+    # KHÔNG expose port ra ngoài - chỉ thông qua nginx load balancer
+    # ports:
+    #   - "51823:51820/udp"
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
@@ -120,7 +123,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
-      - "51821:51820/udp"  # Load balancer cho WireGuard UDP traffic
+      - "51820:51820/udp"  # DUY NHẤT port WireGuard ra ngoài - Load balancer cho tất cả WireGuard traffic
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./logs/nginx:/var/log/nginx
