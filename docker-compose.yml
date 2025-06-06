@@ -41,7 +41,23 @@ services:
   # ========================
   # LỚP BẢO MẬT
   # ========================
-  
+  nginx:
+    image: nginx:alpine
+    container_name: vpn-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./logs/nginx:/var/log/nginx
+    restart: unless-stopped
+    networks:
+      - vpn-net
+    healthcheck:
+      test: ["CMD", "nginx", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   # ========================
   # LỚP QUẢN LÝ
