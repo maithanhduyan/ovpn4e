@@ -1,4 +1,4 @@
-# OpenVPN Enterprise Server
+# Opensource VPN Server for Enterprise 
 Ý tưởng ban đầu:
 Tạo một vpn server cho doanh nghiệp có hơn 10000 nhân sự.
 Mục tiêu hoạt động an toàn, ổn định, cảnh báo, phát hiện xâm nhập bảo vệ toàn bộ công ty. 
