@@ -207,7 +207,7 @@ wg-data-*/
 # VPN Logs (may contain sensitive connection data)
 logs/
 !logs/.gitkeep
-!logs/nginx/.gitkeep
+
 
 # Nginx specific logs and cache
 logs/nginx/*.log
