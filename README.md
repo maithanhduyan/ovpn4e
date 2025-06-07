@@ -26,8 +26,6 @@ Mục tiêu hoạt động an toàn, ổn định, cảnh báo, phát hiện xâ
 ### PHASE 1: LỚP CORE VPN
 - ✅ Cài đặt cấu hình Wireguard
 ### PHASE 2: LỚP BẢO MẬT
-- ✅ Cài nginx cấu hình để ghi logs
-- ✅ Cấu hình nginx để làm load balancer (3 wireguard server)
-- [x] Cài fail2ban để phòng chống tấn công brute force.
+- cấu hình để ghi logs
 ### PHASE 3: LỚP QUẢN LÝ
 ### PHASE 4: LỚP GIÁM SÁT

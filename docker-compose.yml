@@ -24,7 +24,7 @@ services:
       - /lib/modules:/lib/modules:ro
       - ./logs:/var/log/wireguard
     ports:
-      - "51820:51820/udp" # Đã di chuyển sang nginx load balancer
+      - "51820:51820/udp" 
     sysctls:
       - net.ipv4.ip_forward=1
       - net.ipv4.conf.all.src_valid_mark=1
@@ -43,9 +43,58 @@ services:
   # ========================
   # LỚP BẢO MẬT
   # ========================
+  fail2ban:
+    image: crazymax/fail2ban:latest
+    container_name: f2b-security
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      - TZ=${TZ:-Asia/Ho_Chi_Minh}
+      - F2B_LOG_LEVEL=INFO
+      - F2B_DB_PURGE_AGE=1d
+    volumes:
+      - ./f2b-data:/data
+      - ./logs:/var/log/wireguard:rw
+      - /var/log:/var/log/host:ro
+      - /etc/localtime:/etc/localtime:ro
+    restart: unless-stopped
+    depends_on:
+      - wireguard
+    healthcheck:
+      test: ["CMD", "fail2ban-client", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  # Rate limiting tại kernel level
+  iptables-manager:
+    image: alpine:latest
+    container_name: iptables-mgr
+    network_mode: "host"
+    cap_add:
+      - NET_ADMIN
+    command: |
+      sh -c "
+        # Chống UDP flood cho WireGuard
+        iptables -A INPUT -p udp --dport 51820 -m conntrack --ctstate NEW -m recent --set --name WG_CONN
+        iptables -A INPUT -p udp --dport 51820 -m conntrack --ctstate NEW -m recent --update --seconds 60 --hitcount 50 --name WG_CONN -j DROP
+        
+        # Chống SYN flood
+        iptables -A INPUT -p tcp --syn -m limit --limit 1/s --limit-burst 3 -j ACCEPT
+        iptables -A INPUT -p tcp --syn -j DROP
+        
+        # Keep container running
+        tail -f /dev/null
+      "
+    restart: unless-stopped
+    depends_on:
+      - wireguard
 
   # ========================
-  # LỚP QUẢN LÝ
+  # LỚP QUẢN LÝ  
   # ========================
 
 
